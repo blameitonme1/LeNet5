@@ -3,7 +3,7 @@ import torch.nn as nn
 import torchvision
 import torchvision.transforms as transforms
 # define related variables
-batch_size = 64
+batch_size = 32
 num_classes = 10
 learning_rate = 0.001
 num_epochs = 10
@@ -97,6 +97,22 @@ for epoch in range(num_epochs):
         if (i + 1) % 400 == 1:
             print ('Epoch [{}/{}], Step [{}/{}], Loss: {:.4f}' 
         		           .format(epoch+1, num_epochs, i+1, total_step, loss.item()))
+
+
+# start testing
+with torch.no_grad():
+    correct = 0
+    total = 0
+    for images, labels in test_loader:
+        images = images.to(device)
+        labels = labels.to(device)
+        outputs = model(images)
+        # find the max element in dimension given arguement (this case it's 1)
+        _, predicted = torch.max(outputs.data, 1)
+        total += labels.size(0)
+        correct += (predicted == labels).sum().item()
+    print('Accuracy of the network on the 10000 test images: {} %'.format(100 * correct / total))
+	 
 
             
 
